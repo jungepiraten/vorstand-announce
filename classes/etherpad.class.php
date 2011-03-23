@@ -11,6 +11,10 @@ class Etherpad extends CURL {
 		$this->padServer = $padServer;
 	}
 
+	public function getPadServer() {
+		return $this->padServer;
+	}
+
 	public function doGetRequest($url) {
 		return parent::doGetRequest("http://" . $this->padServer . $url);
 	}
@@ -43,6 +47,10 @@ class Pad {
 	public function __construct($etherpad, $padId) {
 		$this->etherpad = $etherpad;
 		$this->padId = $padId;
+	}
+
+	public function getURL() {
+		return "http://" . $this->etherpad->getPadServer() . "/" . $this->padId;
 	}
 
 	public function getText() {

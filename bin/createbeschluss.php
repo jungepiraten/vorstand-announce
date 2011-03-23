@@ -17,7 +17,7 @@ $titel = str_replace("|", "{{!}}", $titel);
 $antragtext = str_replace("|", "{{!}}", $antragtext);
 $zusatz = str_replace("|", "{{!}}", $zusatz);
 
-require_once(dirname(__FILE__) . "/config.php");
+require_once(dirname(__FILE__) . "/../config.php");
 
 $wiki = Vorstand::getMediaWiki();
 
