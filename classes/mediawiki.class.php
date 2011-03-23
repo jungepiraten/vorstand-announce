@@ -60,6 +60,17 @@ class MediaWikiPage {
 		$this->titel = $titel;
 	}
 
+	private function getPageProps($string) {
+		$data = $this->mediawiki->doGetRequest("action=query&prop=info&titles=" . urlencode($this->titel) . "&" . $string);
+		$page = array_shift($data["query"]["pages"]);
+		return $page;
+	}
+
+	public function getURL() {
+		$page = $this->getPageProps("inprop=url");
+		return $page["fullurl"];
+	}
+
 	private function getActionToken($action) {
 		$data = $this->mediawiki->doGetRequest("action=query&prop=info&titles=" . urlencode($this->titel) . "&intoken=" . urlencode($action));
 		$page = array_shift($data["query"]["pages"]);

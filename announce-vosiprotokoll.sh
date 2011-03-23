@@ -4,8 +4,9 @@ DATE="`date +%Y-%m-%d`"
 #DATE="2011-03-01"
 VOSIPAGE="Vorstand/Sitzung $DATE"
 PAGE="$VOSIPAGE/Protokoll"
-URLPAGE=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$PAGE"`
-WIKILINK="http://wiki.junge-piraten.de/wiki/$URLPAGE"
+WIKILINK=`$(dirname $0)/bin/getwikiurl.php "$PAGE"`
+PAD="vorstandssitzung-$DATE"
+PADLINK=`$(dirname $0)/bin/getpadurl.php "$PAD"`
 RCPT="announce@lists.junge-piraten.de"
 TMPFILE=/tmp/jupis.$$
 
@@ -14,8 +15,8 @@ $(dirname $0)/bin/getwikipage.php "$VOSIPAGE" > /dev/null || exit
 
 # Protokoll bearbeiten, falls noch nicht geschehen
 $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE || {
-	$(dirname $0)/bin/getpadtext.php "vorstandssitzung-$DATE" > "$TMPFILE"
-	$(dirname $0)/bin/setwikipage.php "$PAGE" "Aus http://jupis.piratenpad.de/vorstandssitzung-$DATE" <<EOT
+	$(dirname $0)/bin/getpadtext.php "$PAD" > "$TMPFILE"
+	$(dirname $0)/bin/setwikipage.php "$PAGE" "Aus $PADLINK" <<EOT
 {{Protokoll}}
 {{Offiziell}}
 $(cat "$TMPFILE" | $(dirname $0)/parsevosiprotokoll.php "$DATE")

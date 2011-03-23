@@ -3,11 +3,9 @@
 DATE="`date +%Y-%m-%d`"
 #DATE="2011-03-01"
 PAGE="Vorstand/Sitzung $DATE"
-URLPAGE=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$PAGE"`
-WIKILINK="http://wiki.junge-piraten.de/wiki/$URLPAGE"
+WIKILINK=`$(dirname $0)/bin/getwikiurl.php "$PAGE"`
 PAD="vorstandssitzung-$DATE"
-URLPAD=`perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$PAD"`
-PADLINK="http://jupis.piratenpad.de/$URLPAD"
+PADLINK=`$(dirname $0)/bin/getpadurl.php "$PAD"`
 
 RCPT="announce@lists.junge-piraten.de"
 TMPFILE=/tmp/jupis.$$
