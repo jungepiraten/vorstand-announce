@@ -72,8 +72,7 @@ class MediaWikiPage {
 	}
 
 	private function getActionToken($action) {
-		$data = $this->mediawiki->doGetRequest("action=query&prop=info&titles=" . urlencode($this->titel) . "&intoken=" . urlencode($action));
-		$page = array_shift($data["query"]["pages"]);
+		$page = $this->getPageProps("intoken=" . urlencode($action));
 		return $page[$action . "token"];
 	}
 

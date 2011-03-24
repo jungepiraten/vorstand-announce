@@ -15,13 +15,7 @@ $(dirname $0)/bin/getwikipage.php "$VOSIPAGE" > /dev/null || exit
 
 # Protokoll bearbeiten, falls noch nicht geschehen
 $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE || {
-	$(dirname $0)/bin/getpadtext.php "$PAD" > "$TMPFILE"
-	$(dirname $0)/bin/setwikipage.php "$PAGE" "Aus $PADLINK" <<EOT
-{{Protokoll}}
-{{Offiziell}}
-$(cat "$TMPFILE" | $(dirname $0)/parsevosiprotokoll.php "$DATE")
-EOT
-	$(dirname $0)/bin/protectwikipage.php "$PAGE"
+	$(dirname $0)/bin/savesitzung.php "$DATE"
 }
 
 VOSIHASH=`echo "$VOSIPAGE $RCPT" | md5sum | awk '{ print $1 }'`

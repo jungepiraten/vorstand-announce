@@ -11,8 +11,6 @@ RCPT="announce@lists.junge-piraten.de"
 TMPFILE=/tmp/jupis.$$
 
 $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE && {
-	$(dirname $0)/bin/createpad.php "$PAD"
-
 	HASH=`echo "$PAGE $RCPT" | md5sum | awk '{ print $1 }'`
 	/usr/sbin/sendmail "$RCPT" <<EOT
 From: vorstand@junge-piraten.de
@@ -27,7 +25,7 @@ $PADLINK
 
 $($(dirname "$0")/bin/getwikipage.php "$PAGE" 0)
 
-$($(dirname "$0")/getwikitoplist.php "$DATE")
+$($(dirname "$0")/bin/getprotokollvorlage.php "$DATE")
 EOT
 }
 
