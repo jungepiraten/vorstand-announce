@@ -7,16 +7,22 @@ class CURL {
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_COOKIEFILE, '/dev/null');
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
+	}
+
+	protected function getResponseCode() {
+		return curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 	}
 
 	public function doGetRequest($url) {
 		ob_start();
 		curl_setopt($this->curl, CURLOPT_URL, $url);
 		curl_setopt($this->curl, CURLOPT_HTTPGET, true);
-		curl_exec($this->curl);
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
+		$text = curl_exec($this->curl);
+		if (substr($this->getResponseCode(), 0, 1) != 2) {
+			throw new Exception("HTTP-Exception: Got Code " + $this->getResponseCode());
+		}
+		return $text;
 	}
 
 	public function doPostRequest($url, $data) {
@@ -24,10 +30,11 @@ class CURL {
 		curl_setopt($this->curl, CURLOPT_URL, $url);
 		curl_setopt($this->curl, CURLOPT_POST, true);
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-		curl_exec($this->curl);
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
+		$text = curl_exec($this->curl);
+		if (substr($this->getResponseCode(), 0, 1) != 2) {
+			throw new Exception("HTTP-Exception: Got Code " + $this->getResponseCode());
+		}
+		return $text;
 	}
 }
 

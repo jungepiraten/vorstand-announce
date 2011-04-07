@@ -15,6 +15,26 @@ class Sitzung {
 		$this->timestamp = $timestamp;
 	}
 
+	public function exists() {
+		return $this->wikiPage->exists();
+	}
+
+	public function getWikiPage() {
+		return $this->wikiPage;
+	}
+
+	public function getProtokollPage() {
+		return $this->wikiProtokollPage;
+	}
+
+	public function getTimestamp() {
+		return $this->timestamp;
+	}
+
+	public function getLastSitzung() {
+		return $this->organ->getSitzungBefore($this->timestamp - 1);
+	}
+
 	public function getInfos() {
 		return $this->wikiPage->getText(0);
 	}
@@ -33,17 +53,43 @@ class Sitzung {
 			$level = $i;
 			$label = trim(substr($wikiline, $i-1));
 
-			if (trim($label) != "") {
+			if ($label != "") {
+				preg_match_all('#<!--\\s*VORSTANDSBOT:\\s*(.*?)\\s*-->#', $label, $matches, PREG_SET_ORDER);
+				$filters = array();
+				foreach ($matches as $match) {
+					$filters[] = strtolower($match[1]);
+					$label = trim(str_replace($match[0], "", $label));
+				}
+				
 				if ($char == "*" or ($i <= 1)) {
 					$pad .= $label;
 				} else {
 					$pad .= str_repeat("=",$level) . " " . $label . " " . str_repeat("=",$level);                   
 				}
 				$pad .= "\n";
+				
+				foreach ($filters as $filter) {
+					$pad .= $this->handleFilter($filter) . "\n";
+				}
 			}
 		}
 		$pad .= $this->wikiPage->getText(2);
 		return $pad;
+	}
+
+	public function handleFilter($filter) {
+		switch ($filter) {
+		case "umlaufbeschluesse":
+			$text = "";
+			// + 1d, damit die Beschlüsse der Vorstandssitzung nicht mitzaehlen
+			foreach ($this->organ->getBeschluesse($this->getLastSitzung()->getTimestamp() + 24*60*60, $this->timestamp) as $beschluss) {
+				$text .= "* [[" . $beschluss->getWikiPage()->getPageName() . "|" . $beschluss->getTitel() . "]]" . "\n";
+			}
+			return trim($text);
+		case "letztesitzung":
+			$sitzung = $this->getLastSitzung();
+			return "Das [[" . $sitzung->getProtokollPage()->getPageName() . "|Protokoll]] der Sitzung vom " . date("d.m.Y", $sitzung->getTimestamp()) . " wird mit -/-/- Stimmen angenommen/abgelehnt.";
+		}
 	}
 
 	public function prepare() {
@@ -54,7 +100,9 @@ class Sitzung {
 	}
 
 	public function save() {
-		$protokoll = "{{Protokoll}}{{Offiziell}}" . $this->padProtokoll->getText();
+		$protokoll = $this->padProtokoll->getText();
+		
+		$protokoll = "{{Protokoll}}{{Offiziell}}" . $protokoll;
 
 		// Announce der naechsten Sitzungen und Update der Uebersichtsseite
 		$lastsitzung = $this->timestamp;

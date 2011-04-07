@@ -1,6 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__) . "/sitzung.class.php");
+require_once(dirname(__FILE__) . "/beschluss.class.php");
 
 class Organ {
 	protected $label;
@@ -26,7 +27,37 @@ class Organ {
 		return new Sitzung($this, $this->wiki->getPage($wikiprefix), $this->wiki->getPage($wikiprefix . "/Protokoll"), $this->pad->getPad($this->padPrefix . "-" . date("Y-m-d", $timestamp)), $timestamp);
 	}
 
-	public function getNextBeschlussNr($timestamp) {
+	public function getSitzungBefore($timestamp) {
+		// Sicherheitszaehler, falls es noch gar keine Sitzung gab
+		$i = 0;
+		do {
+			$sitzung = $this->getSitzung($timestamp);
+			$timestamp -= 24*60*60;
+		} while (!$sitzung->exists() and $i++ < 60);
+		if ($sitzung->exists()) {
+			return $sitzung;
+		}
+		return null;
+	}
+
+	public function getBeschluss($beschlussnr) {
+		$wikiprefix = array_shift($this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . $beschlussnr));
+		return new Beschluss($this, $this->wiki->getPage($wikiprefix), $beschlussnr);
+	}
+
+	public function getBeschluesse($lowtimestamp, $hightimestamp) {
+		$beschluesse = array();
+		for ($timestamp = $lowtimestamp; $timestamp <= $hightimestamp; $timestamp += 24*60*60) {
+			$pages = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . date("Ymd", $timestamp));
+			foreach ($pages as $page) {
+				preg_match('#Beschluss/(\\d*)#', $page, $match);
+				$beschluesse[] = $this->getBeschluss($match[1]);
+			}
+		}
+		return $beschluesse;
+	}
+
+	private function getNextBeschlussNr($timestamp) {
 		$pages = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . date("Ymd", $timestamp));
 		$i = 0;
 		foreach ($pages as $page) {

@@ -49,12 +49,24 @@ class Pad {
 		$this->padId = $padId;
 	}
 
+	public function exists() {
+		if ($this->getText() == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public function getURL() {
 		return "http://" . $this->etherpad->getPadServer() . "/" . $this->padId;
 	}
 
 	public function getText() {
-		return $this->etherpad->doGetRequest("/ep/pad/export/" . urlencode($this->padId) . "/latest?format=txt");
+		try {
+			return $this->etherpad->doGetRequest("/ep/pad/export/" . urlencode($this->padId) . "/latest?format=txt");
+		} catch (Exception $e) {
+			return null;
+		}
 	}
 }
 

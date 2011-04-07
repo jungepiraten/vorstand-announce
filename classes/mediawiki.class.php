@@ -132,6 +132,52 @@ class MediaWikiPage {
 		return $content;
 	}
 
+	public function getVorlagenVars($section = null) {
+		$page = $this->getText($section);
+		if ($page == null) {
+			return null;
+		}
+
+		$vorlagenpos = 0;
+		$linkpos = 0;
+		$varname = null;
+		$values = array();
+		$buffer = "";
+		for ($i = 0; $i < strlen($page); $i++) {
+			if (substr($page,$i,2) == "[[") {
+				$linkpos++;
+			}
+			if (substr($page,$i,2) == "{{") {
+				$vorlagenpos++;
+			}
+			if ($vorlagenpos == 1 and $linkpos == 0) {
+				if (substr($page,$i,1) == "|" or substr($page,$i,2) == "}}") {
+					if ($varname != null and $buffer != "") {
+						$values[trim($varname)] = trim($buffer);
+						$varname = null;
+					}
+					$buffer = "";
+					continue;
+				}
+				if (substr($page,$i,1) == "=" and $buffer != "") {
+					if ($varname == null) {
+						$varname = $buffer;
+					}
+					$buffer = "";
+					continue;
+				}
+			}
+			if (substr($page,$i,2) == "]]") {
+				$linkpos--;
+			}
+			if (substr($page,$i,2) == "}}") {
+				$vorlagenpos--;
+			}
+			$buffer .= substr($page, $i, 1);
+		}
+		return $values;
+	}
+
 	public function protect($protections = null) {
 		if ($protections === null) {
 			$protections = array("edit" => "sysop", "move" => "sysop");
