@@ -66,6 +66,10 @@ class MediaWikiPage {
 		return $page;
 	}
 
+	public function getPageName() {
+		return $this->titel;
+	}
+
 	public function getURL() {
 		$page = $this->getPageProps("inprop=url");
 		return $page["fullurl"];

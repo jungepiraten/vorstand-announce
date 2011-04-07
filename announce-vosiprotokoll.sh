@@ -25,6 +25,7 @@ From: vorstand@junge-piraten.de
 To: $RCPT
 Subject: Vorstandssitzung $DATE - Protokoll
 References: <$VOSIHASH@announce.wiki.junge-piraten.de>
+In-Reply-To: <$VOSIHASH@announce.wiki.junge-piraten.de>
 Message-Id: <$HASH@announce.wiki.junge-piraten.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit

@@ -3,11 +3,11 @@
 require_once(dirname(__FILE__) . "/sitzung.class.php");
 
 class Organ {
-	private $label;
-	private $wiki;
-	private $wikiPrefix;
-	private $pad;
-	private $padPrefix;
+	protected $label;
+	protected $wiki;
+	protected $wikiPrefix;
+	protected $pad;
+	protected $padPrefix;
 
 	public function __construct($label, $wiki, $wikiPrefix, $pad, $padPrefix) {
 		$this->label = $label;
@@ -17,9 +17,13 @@ class Organ {
 		$this->padPrefix = $padPrefix;
 	}
 
+	public function getWikiPrefix() {
+		return $this->wikiPrefix;
+	}
+
 	public function getSitzung($timestamp) {
 		$wikiprefix = $this->wikiPrefix . "/Sitzung " . date("Y-m-d", $timestamp);
-		return new Sitzung($this->wiki->getPage($wikiprefix), $this->wiki->getPage($wikiprefix . "/Protokoll"), $this->pad->getPad($this->padPrefix . "-" . date("Y-m-d", $timestamp)), $timestamp);
+		return new Sitzung($this, $this->wiki->getPage($wikiprefix), $this->wiki->getPage($wikiprefix . "/Protokoll"), $this->pad->getPad($this->padPrefix . "-" . date("Y-m-d", $timestamp)), $timestamp);
 	}
 
 	public function getNextBeschlussNr($timestamp) {
@@ -60,6 +64,10 @@ EOT
 		);
 		
 		return $pagetitel;
+	}
+
+	public function updateSitzungsAnnounce($lastsitzung, $nextsitzung) {
+		return;
 	}
 }
 
