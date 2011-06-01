@@ -10,6 +10,10 @@ class CURL {
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
 	}
 
+	public function setUserAgent($uastring) {
+		curl_setopt($this->curl, CURLOPT_USERAGENT, $uastring);
+	}
+
 	protected function getResponseCode() {
 		return curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
 	}

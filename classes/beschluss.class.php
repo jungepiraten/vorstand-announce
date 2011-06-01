@@ -26,6 +26,11 @@ class Beschluss {
 		}
 	}
 
+	public function exists() {
+		$this->loadIfNeeded();
+		return $this->titel != null;
+	}
+
 	public function getBeschlussNr() {
 		return $this->beschlussnr;
 	}

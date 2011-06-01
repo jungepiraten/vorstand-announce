@@ -74,11 +74,13 @@ class Sitzung {
 			}
 		}
 		$pad .= $this->wikiPage->getText(2);
+		$pad = preg_replace('#<!--(.*?)*-->#', '', $pad);
 		return $pad;
 	}
 
 	public function handleFilter($filter) {
-		switch ($filter) {
+		$args = explode(" ", $filter);
+		switch (array_shift($args)) {
 		case "umlaufbeschluesse":
 			$text = "";
 			// + 1d, damit die Beschlüsse der Vorstandssitzung nicht mitzaehlen
@@ -89,6 +91,13 @@ class Sitzung {
 		case "letztesitzung":
 			$sitzung = $this->getLastSitzung();
 			return "Das [[" . $sitzung->getProtokollPage()->getPageName() . "|Protokoll]] der Sitzung vom " . date("d.m.Y", $sitzung->getTimestamp()) . " wird mit -/-/- Stimmen angenommen/abgelehnt.";
+		case "naechstesitzung":
+			$text = "Die nächsten Termine sind:\n";
+			foreach ($args as $arg) {
+				$ntimestamp = $this->timestamp + $arg * 24*60*60;
+				$text .= "* [[" . $this->organ->getWikiPrefix() . "/Sitzung " . date("Y-m-d", $ntimestamp) . "|Der " . date("d.m.Y", $ntimestamp) . "]]\n";
+			}
+			return $text;
 		}
 	}
 
@@ -102,7 +111,7 @@ class Sitzung {
 	public function save() {
 		$protokoll = $this->padProtokoll->getText();
 		
-		$protokoll = "{{Protokoll}}{{Offiziell}}" . $protokoll;
+		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll;
 
 		// Announce der naechsten Sitzungen und Update der Uebersichtsseite
 		$lastsitzung = $this->timestamp;
@@ -121,13 +130,15 @@ class Sitzung {
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
 		// TODO: Beschluesse automatisch erzeugen
-		sendmail("phillip.thelen@junge-piraten.de", "VoSi-Protokoll", <<<EOT
+		mail("phillip.thelen@junge-piraten.de", "VoSi-Protokoll", <<<EOT
 Ahoi,
 
 bei {$this->wikiProtokollPage->getPageName()} muessen noch folgende Tasks durchgefuehrt werden:
 
 * Beschluesse kennzeichnen und formatieren
 * Abschliessende Kontrolle
+
+<{$this->wikiProtokollPage->getURL()}>
 
 habe spass,
 EOT

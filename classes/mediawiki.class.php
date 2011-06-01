@@ -8,6 +8,7 @@ class Mediawiki extends CURL {
 	public function __construct($apiurl, $username = null, $password = null) {
 		parent::__construct();
 		$this->apiurl = $apiurl;
+		$this->setUserAgent("MediaWiki-PHP-Library by prauscher");
 
 		if ($username !== null) {
 			$this->login($username, $password);
@@ -36,6 +37,12 @@ class Mediawiki extends CURL {
 
 	public function getPage($titel) {
 		return new MediaWikiPage($this, $titel);
+	}
+
+	public function getRandomPage() {
+		$data = $this->doGetRequest("action=query&list=random&rnlimit=1");
+		$page = array_shift($data["query"]["random"]);
+		return new MediaWikiPage($this, $page["title"]);
 	}
 
 	public function searchPrefix($prefix) {

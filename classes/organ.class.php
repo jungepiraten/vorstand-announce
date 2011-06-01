@@ -51,7 +51,10 @@ class Organ {
 			$pages = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . date("Ymd", $timestamp));
 			foreach ($pages as $page) {
 				preg_match('#Beschluss/(\\d*)#', $page, $match);
-				$beschluesse[] = $this->getBeschluss($match[1]);
+				$beschluss = $this->getBeschluss($match[1]);
+				if ($beschluss->exists()) {
+					$beschluesse[] = $beschluss;
+				}
 			}
 		}
 		return $beschluesse;
