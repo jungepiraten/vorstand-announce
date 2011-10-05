@@ -3,6 +3,6 @@
 
 require_once(dirname(__FILE__) . "/../config.php");
 
-print(Vorstand::getMediaWiki()->getPage($_SERVER["argv"][1])->getURL());
+print($vorstand->getMediaWiki()->getPage($_SERVER["argv"][1])->getURL());
 
 ?>

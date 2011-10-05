@@ -3,6 +3,6 @@
 
 require_once(dirname(__FILE__) . "/../config.php");
 
-Vorstand::getEtherPad()->createPad($_SERVER["argv"][1]);
+$vorstand->getEtherPad()->createPad($_SERVER["argv"][1]);
 
 ?>

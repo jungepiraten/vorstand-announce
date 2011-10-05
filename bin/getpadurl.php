@@ -3,6 +3,6 @@
 
 require_once(dirname(__FILE__) . "/../config.php");
 
-print(Vorstand::getEtherPad()->getPad($_SERVER["argv"][1])->getURL());
+print($vorstand->getEtherPad()->getPad($_SERVER["argv"][1])->getURL());
 
 ?>

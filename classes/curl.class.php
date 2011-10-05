@@ -5,7 +5,9 @@ class CURL {
 
 	public function __construct() {
 		$this->curl = curl_init();
-		curl_setopt($this->curl, CURLOPT_COOKIEFILE, '/dev/null');
+		curl_setopt($this->curl, CURLOPT_COOKIEJAR, "/tmp/vosi-cookies");
+		curl_setopt($this->curl, CURLOPT_COOKIEFILE, "/tmp/vosi-cookies");
+		curl_setopt($this->curl, CURLOPT_AUTOREFERER, TRUE);
 		curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, 1);
 	}

@@ -18,8 +18,20 @@ class Organ {
 		$this->padPrefix = $padPrefix;
 	}
 
+	public function getMediaWiki() {
+		return $this->wiki;
+	}
+
 	public function getWikiPrefix() {
 		return $this->wikiPrefix;
+	}
+
+	public function getEtherPad() {
+		return $this->pad;
+	}
+
+	public function getPadPrefix() {
+		return $this->padPrefix;
 	}
 
 	public function getSitzung($timestamp) {
