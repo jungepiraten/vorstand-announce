@@ -122,7 +122,7 @@ class Sitzung {
 			if ($timestamp > $lastsitzung and ($nextsitzung < $lastsitzung or $timestamp < $nextsitzung) ) {
 				$nextsitzung = $timestamp;
 			}
-			$page = Vorstand::getMediaWiki()->getPage($match[1]);
+			$page = $this->organ->getMediaWiki()->getPage($match[1]);
 			if (!$page->exists()) {
 				$page->setText("{{subst:Bundesvorstandssitzung|" . $match[2] . "}}", "Angekündigt laut [[" . $this->wikiProtokollPage->getPageName() . "]]");
 			}
