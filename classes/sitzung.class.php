@@ -111,7 +111,7 @@ class Sitzung {
 	public function save() {
 		$protokoll = $this->padProtokoll->getText();
 		
-		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll;
+		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll . "\n\n[[Kategorie:Protokoll der Vorstandssitzung| " . date("Ymd", $this->timestamp) . "]]";
 
 		// Announce der naechsten Sitzungen und Update der Uebersichtsseite
 		$lastsitzung = $this->timestamp;
@@ -130,7 +130,7 @@ class Sitzung {
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
 		// TODO: Beschluesse automatisch erzeugen
-		mail("phillip.thelen@junge-piraten.de", "VoSi-Protokoll", <<<EOT
+		mail("schriftfuehrer@junge-piraten.de", "VoSi-Protokoll", <<<EOT
 Ahoi,
 
 bei {$this->wikiProtokollPage->getPageName()} muessen noch folgende Tasks durchgefuehrt werden:
