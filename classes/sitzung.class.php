@@ -81,6 +81,8 @@ class Sitzung {
 	public function handleFilter($filter) {
 		$args = explode(" ", $filter);
 		switch (array_shift($args)) {
+		case "aufzeichnung":
+			return "{{Aufzeichnung|" . preg_quote($this->wikiProtokollPage->getPageName()) . "}}";
 		case "umlaufbeschluesse":
 			$text = "";
 			// + 1d, damit die Beschlüsse der Vorstandssitzung nicht mitzaehlen
@@ -111,7 +113,7 @@ class Sitzung {
 	public function save() {
 		$protokoll = $this->padProtokoll->getText();
 		
-		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll . "\n\n[[Kategorie:Protokoll der Vorstandssitzung| " . date("Ymd", $this->timestamp) . "]]";
+		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll . "\n\n[[Kategorie:Protokoll der Vorstandssitzung|" . date("Ymd", $this->timestamp) . "]]";
 
 		// Announce der naechsten Sitzungen und Update der Uebersichtsseite
 		$lastsitzung = $this->timestamp;
