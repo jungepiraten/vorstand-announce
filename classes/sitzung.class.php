@@ -82,7 +82,7 @@ class Sitzung {
 		$args = explode(" ", $filter);
 		switch (array_shift($args)) {
 		case "aufzeichnung":
-			return "{{Aufzeichnung|" . preg_quote($this->wikiProtokollPage->getPageName()) . "}}";
+			return "{{Aufzeichnung}}";
 		case "umlaufbeschluesse":
 			$text = "";
 			// + 1d, damit die Beschlüsse der Vorstandssitzung nicht mitzaehlen
