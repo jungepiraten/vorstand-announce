@@ -18,6 +18,10 @@ class Organ {
 		$this->padPrefix = $padPrefix;
 	}
 
+	public function getLabel() {
+		return $this->label;
+	}
+
 	public function getMediaWiki() {
 		return $this->wiki;
 	}
@@ -93,6 +97,15 @@ class Organ {
 		
 		$pagetitel = $this->wikiPrefix . "/Beschluss/" . $beschlussnr . " " . $titel;
 		$page = $this->wiki->getPage($pagetitel);
+		$beschluss = new Beschluss($this, $page, $beschlussnr);
+		$beschluss->setTimestamp($timestamp);
+		$beschluss->setTitel($titel);
+		$beschluss->setText($text);
+		$beschluss->setStimmen($dafuer, $dagegen, $enthaltung);
+		$beschluss->setZusatz($zusatz);
+		$beschluss->setAntragsteller($antragsteller);
+		$beschluss->save();
+/**
 		$page->setText(<<<EOT
 {{Beschluss Seite
 |Organ = {$this->label}
@@ -108,8 +121,9 @@ class Organ {
 }}
 EOT
 		);
+**/
 		
-		return $pagetitel;
+		return $beschluss;
 	}
 
 	public function updateSitzungsAnnounce($lastsitzung, $nextsitzung) {

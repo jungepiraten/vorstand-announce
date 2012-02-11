@@ -131,13 +131,26 @@ class Sitzung {
 		}
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
+		preg_match_all('${{Antrag.*}}$Ums', $protokoll, $antraege, PREG_SET_ORDER);
+		foreach ($antraege as $antrag) {
+			$antragVars = getMediaWikiVorlagenVars($antrag[0]);
+			if (preg_match('$Angenommen \\(([0-9])/([0-9])/([0-9])\\)$i', $antragVars["beschluss"], $stimmen)) {
+				$begruendung = $antragVars["begruendung"];
+				if ($begruendung == null) {
+					$begruendung = $antragVars["begründung"];
+				}
+				$beschluss = $this->organ->addBeschluss($this->timestamp, $antragVars["antragstitel"], $antragVars["antragstext"], $stimmen[1], $stimmen[2], $stimmen[3], $begruendung, $antragVars["antragssteller"]);
+				$antragVorlage = str_replace($antragVars["beschluss"], $antragVars["beschluss"] . " [[" . $beschluss->getWikiPage()->getPageName() . "|Beschluss " . $beschluss->getBeschlussNr() . "]]", $antrag[0]);
+				$protokoll = str_replace($antrag[0], $antragVorlage, $protokoll);
+			}
+		}
+
 		// TODO: Beschluesse automatisch erzeugen
 		mail("schriftfuehrer@junge-piraten.de", "VoSi-Protokoll", <<<EOT
 Ahoi,
 
 bei {$this->wikiProtokollPage->getPageName()} muessen noch folgende Tasks durchgefuehrt werden:
 
-* Beschluesse kennzeichnen und formatieren
 * Abschliessende Kontrolle
 
 <{$this->wikiProtokollPage->getURL()}>

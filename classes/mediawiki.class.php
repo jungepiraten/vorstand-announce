@@ -145,44 +145,7 @@ class MediaWikiPage {
 			return null;
 		}
 
-		$vorlagenpos = 0;
-		$linkpos = 0;
-		$varname = null;
-		$values = array();
-		$buffer = "";
-		for ($i = 0; $i < strlen($page); $i++) {
-			if (substr($page,$i,2) == "[[") {
-				$linkpos++;
-			}
-			if (substr($page,$i,2) == "{{") {
-				$vorlagenpos++;
-			}
-			if ($vorlagenpos == 1 and $linkpos == 0) {
-				if (substr($page,$i,1) == "|" or substr($page,$i,2) == "}}") {
-					if ($varname != null and $buffer != "") {
-						$values[trim($varname)] = trim($buffer);
-						$varname = null;
-					}
-					$buffer = "";
-					continue;
-				}
-				if (substr($page,$i,1) == "=" and $buffer != "") {
-					if ($varname == null) {
-						$varname = $buffer;
-					}
-					$buffer = "";
-					continue;
-				}
-			}
-			if (substr($page,$i,2) == "]]") {
-				$linkpos--;
-			}
-			if (substr($page,$i,2) == "}}") {
-				$vorlagenpos--;
-			}
-			$buffer .= substr($page, $i, 1);
-		}
-		return $values;
+		return getMediaWikiVorlagenVars($page);
 	}
 
 	public function protect($protections = null) {
@@ -198,6 +161,47 @@ class MediaWikiPage {
 		$string = "token=" . urlencode($token) . "&title=" . urlencode($this->titel) . "&protections=" . urlencode(implode("|", $protects));
 		$data = $this->mediawiki->doPostRequest("action=protect", $string);
 	}
+}
+
+function getMediaWikiVorlagenVars($page) {
+	$vorlagenpos = 0;
+	$linkpos = 0;
+	$varname = null;
+	$values = array();
+	$buffer = "";
+	for ($i = 0; $i < strlen($page); $i++) {
+		if (substr($page,$i,2) == "[[") {
+			$linkpos++;
+		}
+		if (substr($page,$i,2) == "{{") {
+			$vorlagenpos++;
+		}
+		if ($vorlagenpos == 1 and $linkpos == 0) {
+			if (substr($page,$i,1) == "|" or substr($page,$i,2) == "}}") {
+				if ($varname != null and $buffer != "") {
+					$values[trim($varname)] = trim($buffer);
+					$varname = null;
+				}
+				$buffer = "";
+				continue;
+			}
+			if (substr($page,$i,1) == "=" and $buffer != "") {
+				if ($varname == null) {
+					$varname = $buffer;
+				}
+				$buffer = "";
+				continue;
+			}
+		}
+		if (substr($page,$i,2) == "]]") {
+			$linkpos--;
+		}
+		if (substr($page,$i,2) == "}}") {
+			$vorlagenpos--;
+		}
+		$buffer .= substr($page, $i, 1);
+	}
+	return $values;
 }
 
 ?>

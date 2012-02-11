@@ -35,6 +35,14 @@ class Beschluss {
 		return $this->beschlussnr;
 	}
 
+	public function getTimestamp() {
+		return $this->timestamp;
+	}
+	
+	public function setTimestamp($timestamp) {
+		$this->timestamp = $timestamp;
+	}
+
 	public function getTitel() {
 		$this->loadIfNeeded();
 		return $this->titel;
@@ -72,17 +80,17 @@ class Beschluss {
 	}
 
 	public function getDafuer() {
-		$this->loadAsNeeded();
+		$this->loadIfNeeded();
 		return $this->dafuer;
 	}
 
 	public function getDagegen() {
-		$this->loadAsNeeded();
+		$this->loadIfNeeded();
 		return $this->dagegen;
 	}
 
 	public function getEnthaltung() {
-		$this->loadAsNeeded();
+		$this->loadIfNeeded();
 		return $this->enthaltung;
 	}
 
@@ -94,10 +102,6 @@ class Beschluss {
 
 	public function getWikiPage() {
 		return $this->wikiPage;
-	}
-
-	public function getTimestamp() {
-		return $this->timestamp;
 	}
 
 	public function load() {
@@ -118,7 +122,7 @@ class Beschluss {
 	}
 	
 	public function save() {
-		$date = date("Y-m-d", $this->timestamp);
+		$date = date("Y-m-d", $this->getTimestamp());
 		
 		$this->wikiPage->setText(<<<EOT
 {{Beschluss Seite
@@ -126,12 +130,12 @@ class Beschluss {
 |Beschluss-Datum = {$date}
 |Beschluss-Nummer = {$this->getBeschlussNr()}
 |Beschluss-Titel = {$this->getTitel()}
-|Beschluss-Text = $antragtext
-|Zusatzinfos = $zusatz
-|Antragssteller = $antragsteller
-|ja-Stimmen = $dafuer
-|nein-Stimmen = $dagegen
-|Enthaltung-Stimmen = $enthaltung
+|Beschluss-Text = {$this->getText()}
+|Zusatzinfos = {$this->getZusatz()}
+|Antragssteller = {$this->getAntragsteller()}
+|ja-Stimmen = {$this->getDafuer()}
+|nein-Stimmen = {$this->getDagegen()}
+|Enthaltung-Stimmen = {$this->getEnthaltung()}
 }}
 EOT
 		);
