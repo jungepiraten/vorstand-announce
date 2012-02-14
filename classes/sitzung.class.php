@@ -90,6 +90,12 @@ class Sitzung {
 				$text .= "* [[" . $beschluss->getWikiPage()->getPageName() . "|" . $beschluss->getTitel() . "]]" . "\n";
 			}
 			return trim($text);
+		case "laufendebeschluesse":
+			$text = "";
+			foreach ($this->organ->getLaufendeBeschluesse() as $beschluss) {
+				$text .= "* [[" . $beschluss->getWikiPage()->getPageName() . "|" . $beschluss->getTitel() . "]]" . "\n";
+			}
+			return trim($text);
 		case "letztesitzung":
 			$sitzung = $this->getLastSitzung();
 			return "Das [[" . $sitzung->getProtokollPage()->getPageName() . "|Protokoll]] der Sitzung vom " . date("d.m.Y", $sitzung->getTimestamp()) . " wird mit -/-/- Stimmen angenommen/abgelehnt.";

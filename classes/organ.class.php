@@ -76,6 +76,18 @@ class Organ {
 		return $beschluesse;
 	}
 
+	public function getLaufendeBeschluesse() {
+		$beschluesse = array();
+		foreach ($this->wiki->getPagesByCategory("Nicht erledigter Beschluss " . $this->getLabel()) as $page) {
+			preg_match('#Beschluss/(\\d*)#', $page, $match);
+			$beschluss = $this->getBeschluss($match[1]);
+			if ($beschluss->exists()) {
+				$beschluesse[] = $beschluss;
+			}
+		}
+		return $beschluesse;
+	}
+
 	private function getNextBeschlussNr($timestamp) {
 		$pages = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . date("Ymd", $timestamp));
 		$i = 0;

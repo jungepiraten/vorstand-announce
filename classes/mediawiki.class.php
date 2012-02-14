@@ -56,6 +56,18 @@ class Mediawiki extends CURL {
 		} while (isset($data["query-continue"]) && $apfrom = "&apfrom=" . urlencode($data["query-continue"]["allpages"]["apfrom"]));
 		return $pages;
 	}
+
+	public function getPagesByCategory($name) {
+		$pages = array();
+		$apfrom = "";
+		do {
+			$data = $this->doGetRequest("action=query&list=categorymembers&cmtitle=Category:" . urlencode($name) . $apfrom);
+			foreach ($data["query"]["categorymembers"] as $page) {
+				$pages[] = $page["title"];
+			}
+		} while (isset($data["query-continue"]) && $apfrom = "&cmcontinue=" . urlencode($data["query-continue"]["categorymembers"]["cmcontinue"]));
+		return $pages;
+	}
 }
 
 class MediaWikiPage {
