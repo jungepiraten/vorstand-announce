@@ -93,7 +93,11 @@ class Sitzung {
 		case "laufendebeschluesse":
 			$text = "";
 			foreach ($this->organ->getLaufendeBeschluesse() as $beschluss) {
+				$vars = $beschluss->getWikiPage()->getVorlagenVars();
 				$text .= "* [[" . $beschluss->getWikiPage()->getPageName() . "|" . $beschluss->getTitel() . "]]" . "\n";
+				if (isset($vars["Zustaendig"])) {
+					$text .= "** Verantwortlich: " . $vars["Zustaendig"] . "\n";
+				}
 			}
 			return trim($text);
 		case "letztesitzung":
@@ -137,6 +141,20 @@ class Sitzung {
 		}
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
+		// Aenderungen an Beschluessen ins Wiki laden
+		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Beschluss/(\\d{11}).*\\|.*?\\]\\](\n\\*\\*( Verantwortlich (.*)| Erledigt(.*)|.*))*$mi', $protokoll, $beschluesse, PREG_SET_ORDER);
+		foreach ($beschluesse as $beschlussStruct) {
+			$beschluss = $this->organ->getBeschluss($beschlussStruct[1]);
+			if (!empty($beschlussStruct[4])) {
+				$beschluss->setVerantwortlicher($beschlussStruct[4]);
+			}
+			if (!empty($beschlussStruct[5])) {
+				$beschluss->setErledigt(trim($beschlussStruct[5] . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])"));
+			}
+			$beschluss->save();
+		}
+
+		// Gefaellte Beschluesse ins wiki laden
 		preg_match_all('${{Antrag.*}}$Ums', $protokoll, $antraege, PREG_SET_ORDER);
 		foreach ($antraege as $antrag) {
 			$antragVars = getMediaWikiVorlagenVars($antrag[0]);
