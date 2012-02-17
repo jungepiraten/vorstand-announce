@@ -40,7 +40,7 @@ class Sitzung {
 	}
 
 	public function getProtokollVorlage() {
-		$pad = "== Anwesend ==" . "\n";
+		$pad = "";
 		$wiki = explode("\n", $this->wikiPage->getText(1));
 		// Da ist die Uebersicht ("Tagesordnung") noch dabei
 		array_shift($wiki);
@@ -60,20 +60,21 @@ class Sitzung {
 					$filters[] = strtolower($match[1]);
 					$label = trim(str_replace($match[0], "", $label));
 				}
-				
-				if ($char == "*" or ($i <= 1)) {
-					$pad .= $label;
-				} else {
-					$pad .= str_repeat("=",$level) . " " . $label . " " . str_repeat("=",$level);                   
+
+				if ($label != "") {
+					if ($char == "*" or ($i <= 1)) {
+						$pad .= $label;
+					} else {
+						$pad .= str_repeat("=",$level) . " " . $label . " " . str_repeat("=",$level);                   
+					}
+					$pad .= "\n";
 				}
-				$pad .= "\n";
 				
 				foreach ($filters as $filter) {
 					$pad .= $this->handleFilter($filter) . "\n";
 				}
 			}
 		}
-		$pad .= $this->wikiPage->getText(2);
 		$pad = preg_replace('#<!--(.*?)*-->#', '', $pad);
 		return $pad;
 	}
@@ -81,6 +82,8 @@ class Sitzung {
 	public function handleFilter($filter) {
 		$args = explode(" ", $filter);
 		switch (array_shift($args)) {
+		case "anwesend":
+			return "== Anwesend ==";
 		case "aufzeichnung":
 			return "{{Aufzeichnung}}";
 		case "umlaufbeschluesse":
@@ -110,6 +113,11 @@ class Sitzung {
 				$text .= "* [[" . $this->organ->getWikiPrefix() . "/Sitzung " . date("Y-m-d", $ntimestamp) . "|Der " . date("d.m.Y", $ntimestamp) . "]]\n";
 			}
 			return $text;
+		case "antraege":
+			$antragLines = explode("\n", $this->wikiPage->getText(2));
+			// Ueberschrift wegbuxen
+			array_shift($antragLines);
+			return trim(implode("\n", $antragLines));
 		}
 	}
 
