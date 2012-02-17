@@ -123,7 +123,7 @@ class Sitzung {
 	public function save() {
 		$protokoll = $this->padProtokoll->getText();
 		
-		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll . "\n\n[[Kategorie:Protokoll der Vorstandssitzung|" . date("Ymd", $this->timestamp) . "]]";
+		$protokoll = "{{Protokoll}}\n{{Offiziell}}\n" . $protokoll . "\n\n[[Kategorie:Protokoll der Vorstandssitzung des ".$this->organ->getLabel()."s|" . date("Y-m-d", $this->timestamp) . "]]";
 
 		// Announce der naechsten Sitzungen und Update der Uebersichtsseite
 		$lastsitzung = $this->timestamp;
@@ -142,14 +142,14 @@ class Sitzung {
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
 		// Aenderungen an Beschluessen ins Wiki laden
-		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Beschluss/(\\d{11}).*\\|.*?\\]\\](\n\\*\\*( Verantwortlich (.*)| Erledigt(.*)|.*))*$mi', $protokoll, $beschluesse, PREG_SET_ORDER);
+		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Beschluss/(\\d{11}).*\\|.*?\\]\\](\n\\*\\*(\\s*Verantwortlich(.*)|\\s*Erledigt(.*)|.*))*$mi', $protokoll, $beschluesse, PREG_SET_ORDER);
 		foreach ($beschluesse as $beschlussStruct) {
 			$beschluss = $this->organ->getBeschluss($beschlussStruct[1]);
 			if (!empty($beschlussStruct[4])) {
-				$beschluss->setVerantwortlicher($beschlussStruct[4]);
+				$beschluss->setVerantwortlicher(trim($beschlussStruct[4], ' :'));
 			}
 			if (!empty($beschlussStruct[5])) {
-				$beschluss->setErledigt(trim($beschlussStruct[5] . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])"));
+				$beschluss->setErledigt(trim($beschlussStruct[5] . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])", ' :'));
 			}
 			$beschluss->save();
 		}
@@ -163,7 +163,7 @@ class Sitzung {
 				if ($begruendung == null) {
 					$begruendung = $antragVars["begründung"];
 				}
-				$beschluss = $this->organ->addBeschluss($this->timestamp, $antragVars["antragstitel"], $antragVars["antragstext"], $stimmen[1], $stimmen[2], $stimmen[3], $begruendung, $antragVars["antragssteller"]);
+				$beschluss = $this->organ->addBeschluss($this->timestamp, $antragVars["antragstitel"], $antragVars["antragstext"], $stimmen[1], $stimmen[2], $stimmen[3], $begruendung, $antragVars["antragssteller"], $antragVars["zustaendig"]);
 				$antragVorlage = str_replace($antragVars["beschluss"], $antragVars["beschluss"] . " [[" . $beschluss->getWikiPage()->getPageName() . "|Beschluss " . $beschluss->getBeschlussNr() . "]]", $antrag[0]);
 				$protokoll = str_replace($antrag[0], $antragVorlage, $protokoll);
 			}

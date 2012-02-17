@@ -99,7 +99,7 @@ class Organ {
 		return date("Ymd", $timestamp) . str_pad($i, 3, "0", STR_PAD_LEFT);
 	}
 
-	public function addBeschluss($timestamp, $titel, $antragtext, $dafuer, $dagegen, $enthaltung, $zusatz, $antragsteller) {
+	public function addBeschluss($timestamp, $titel, $antragtext, $dafuer, $dagegen, $enthaltung, $zusatz, $antragsteller, $zustaendig) {
 		$beschlussnr = $this->getNextBeschlussNr($timestamp);
 		$titel = str_replace("|", "{{!}}", $titel);
 		$antragtext = str_replace("|", "{{!}}", $antragtext);
@@ -112,29 +112,12 @@ class Organ {
 		$beschluss = new Beschluss($this, $page, $beschlussnr);
 		$beschluss->setTimestamp($timestamp);
 		$beschluss->setTitel($titel);
-		$beschluss->setText($text);
+		$beschluss->setText($antragtext);
 		$beschluss->setStimmen($dafuer, $dagegen, $enthaltung);
 		$beschluss->setZusatz($zusatz);
 		$beschluss->setAntragsteller($antragsteller);
+		$beschluss->setVerantwortlicher($zustaendig);
 		$beschluss->save();
-/**
-		$page->setText(<<<EOT
-{{Beschluss Seite
-|Organ = {$this->label}
-|Beschluss-Datum = $date
-|Beschluss-Nummer = $beschlussnr
-|Beschluss-Titel = $titel
-|Beschluss-Text = $antragtext
-|Zusatzinfos = $zusatz
-|Antragssteller = $antragsteller
-|ja-Stimmen = $dafuer
-|nein-Stimmen = $dagegen
-|Enthaltung-Stimmen = $enthaltung
-}}
-EOT
-		);
-**/
-		
 		return $beschluss;
 	}
 
