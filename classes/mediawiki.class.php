@@ -197,10 +197,8 @@ function getMediaWikiVorlagenVars($page) {
 				$buffer = "";
 				continue;
 			}
-			if (substr($page,$i,1) == "=" and $buffer != "") {
-				if ($varname == null) {
-					$varname = $buffer;
-				}
+			if (substr($page,$i,1) == "=" and $buffer != "" and $varname == null) {
+				$varname = $buffer;
 				$buffer = "";
 				continue;
 			}
