@@ -57,8 +57,14 @@ class Organ {
 	}
 
 	public function getBeschluss($beschlussnr) {
-		$wikiprefix = array_shift($this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . $beschlussnr));
-		return new Beschluss($this, $this->wiki->getPage($wikiprefix), $beschlussnr);
+		$seiten = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . $beschlussnr);
+		foreach ($seiten as $wikiprefix) {
+			$beschluss = new Beschluss($this, $this->wiki->getPage($wikiprefix), $beschlussnr);
+			if ($beschluss->exists()) {
+				return $beschluss;
+			}
+		}
+		return null;
 	}
 
 	public function getBeschluesse($lowtimestamp, $hightimestamp) {

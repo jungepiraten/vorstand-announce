@@ -123,8 +123,7 @@ class Sitzung {
 
 	public function prepare() {
 		$this->padProtokoll->create();
-		// TODO Pad-Inhalt setzen
-		// $this->getProtokollVorlage();
+		$this->padProtokoll->setText($this->getProtokollVorlage());
 		// TODO Mail verschicken
 	}
 
@@ -177,23 +176,8 @@ class Sitzung {
 			}
 		}
 
-		// TODO: Beschluesse automatisch erzeugen
-		mail("schriftfuehrer@junge-piraten.de", "VoSi-Protokoll", <<<EOT
-Ahoi,
-
-bei {$this->wikiProtokollPage->getPageName()} muessen noch folgende Tasks durchgefuehrt werden:
-
-* Abschliessende Kontrolle
-
-<{$this->wikiProtokollPage->getURL()}>
-
-habe spass,
-EOT
-);
-
 		$this->wikiProtokollPage->setText($protokoll, "Aus " . $this->padProtokoll->getURL());
 		$this->wikiProtokollPage->protect();
-		// TODO Mail verschicken
 	}
 }
 

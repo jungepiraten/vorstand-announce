@@ -68,6 +68,10 @@ class Pad {
 			return null;
 		}
 	}
+
+	public function setText($text) {
+		// Unsupported
+	}
 }
 
 ?>
