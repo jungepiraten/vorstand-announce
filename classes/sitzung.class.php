@@ -149,14 +149,14 @@ class Sitzung {
 		$this->organ->updateSitzungsAnnounce($lastsitzung, $nextsitzung);
 
 		// Aenderungen an Beschluessen ins Wiki laden
-		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Beschluss/(\\d{11}).*\\|.*?\\]\\](\n\\*\\*(\\s*Verantwortlich(.*)|\\s*Erledigt(.*)|.*))*$mi', $protokoll, $beschluesse, PREG_SET_ORDER);
+		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Beschluss/(\\d{11}).*\\|.*?\\]\\](\n\\*\\*(\\s*Verantwortlich(.*)|\\s*(Erledigt.*)|.*))*$mi', $protokoll, $beschluesse, PREG_SET_ORDER);
 		foreach ($beschluesse as $beschlussStruct) {
 			$beschluss = $this->organ->getBeschluss($beschlussStruct[1]);
 			if (!empty($beschlussStruct[4])) {
 				$beschluss->setVerantwortlicher(trim($beschlussStruct[4], ' :'));
 			}
 			if (!empty($beschlussStruct[5])) {
-				$beschluss->setErledigt(trim($beschlussStruct[5] . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])", ' :'));
+				$beschluss->setErledigt(trim(substr($beschlussStruct[5], 8) . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])", ' :'));
 			}
 			$beschluss->save();
 		}

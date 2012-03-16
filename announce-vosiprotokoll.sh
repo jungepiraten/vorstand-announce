@@ -18,6 +18,24 @@ $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE || {
 	$(dirname $0)/bin/savesitzung.php "$DATE"
 }
 
+$(dirname $0)/bin/getwikipage.php "$PAGE" | grep "{{Aufzeichnung}}" > /dev/null && {
+	/usr/sbin/sendmail "vorstand@junge-piraten.de" <<EOT
+From: vorstand@junge-piraten.de
+To: vorstand@junge-piraten.de
+Subject: Aufzeichnung Protokoll der Vorstandssitzung $DATE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Ohai,
+
+von der Vorstandssitzung am $DATE fehlt noch die Aufzeichnung:
+
+$($(dirname $0)/bin/getwikiurl.php "Datei:Vorstand-Sitzung $DATE-Protokoll.ogg")
+
+moege man dem erloeser des problems einen keks spenden!
+EOT
+}
+
 VOSIHASH=`echo "$VOSIPAGE $RCPT" | md5sum | awk '{ print $1 }'`
 HASH=`echo "$PAGE $RCPT" | md5sum | awk '{ print $1 }'`
 /usr/sbin/sendmail "$RCPT" <<EOT
