@@ -10,9 +10,9 @@ PADLINK=`$(dirname $0)/bin/getpadurl.php "$PAD"`
 RCPT="announce@lists.junge-piraten.de"
 TMPFILE=/tmp/jupis.$$
 
-$(dirname $0)/bin/preparesitzung.php "$DATE"
-
 $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE && {
+	$(dirname $0)/bin/preparesitzung.php "$DATE"
+
 	HASH=`echo "$PAGE $RCPT" | md5sum | awk '{ print $1 }'`
 	/usr/sbin/sendmail "$RCPT" <<EOT
 From: vorstand@junge-piraten.de
