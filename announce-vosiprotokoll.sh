@@ -4,6 +4,7 @@ DATE="`date +%Y-%m-%d`"
 #DATE="2011-03-01"
 VOSIPAGE="Vorstand/Sitzung $DATE"
 PAGE="$VOSIPAGE/Protokoll"
+AUFZEICHNUNG="Datei:Vorstand-Sitzung $DATE-Protokoll.ogg"
 WIKILINK=`$(dirname $0)/bin/getwikiurl.php "$PAGE"`
 PAD="vorstandssitzung-$DATE"
 PADLINK=`$(dirname $0)/bin/getpadurl.php "$PAD"`
@@ -18,7 +19,7 @@ $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE || {
 	$(dirname $0)/bin/savesitzung.php "$DATE"
 }
 
-$(dirname $0)/bin/getwikipage.php "$PAGE" | grep "{{Aufzeichnung}}" > /dev/null && {
+$(dirname $0)/bin/getwikipage.php "$PAGE" | grep "{{Aufzeichnung}}" > /dev/null && $(dirname $0)/bin/getwikipage.php "$AUFZEICHNUNG" {
 	/usr/sbin/sendmail "vorstand@junge-piraten.de" <<EOT
 From: vorstand@junge-piraten.de
 To: vorstand@junge-piraten.de
