@@ -48,6 +48,10 @@ class LitePad {
 		}
 	}
 
+	public function create() {
+		$this->apiClient->createPad($this->padId, "");
+	}
+
 	public function setText($text) {
 		$this->apiClient->setText($this->padId, $text);
 	}

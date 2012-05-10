@@ -69,6 +69,10 @@ class Pad {
 		}
 	}
 
+	public function create() {
+		$this->etherpad->createPad($this->padId);
+	}
+
 	public function setText($text) {
 		// Unsupported
 	}

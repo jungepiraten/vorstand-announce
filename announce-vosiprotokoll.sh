@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DATE="`date +%Y-%m-%d`"
-#DATE="2011-03-01"
+#DATE="2012-05-10"
 VOSIPAGE="Vorstand/Sitzung $DATE"
 PAGE="$VOSIPAGE/Protokoll"
 AUFZEICHNUNG="Datei:Vorstand-Sitzung $DATE-Protokoll.ogg"
@@ -19,7 +19,7 @@ $(dirname $0)/bin/getwikipage.php "$PAGE" > $TMPFILE || {
 	$(dirname $0)/bin/savesitzung.php "$DATE"
 }
 
-$(dirname $0)/bin/getwikipage.php "$PAGE" | grep "{{Aufzeichnung}}" > /dev/null && $(dirname $0)/bin/getwikipage.php "$AUFZEICHNUNG" {
+$(dirname $0)/bin/getwikipage.php "$PAGE" | grep "{{Aufzeichnung}}" > /dev/null && $(dirname $0)/bin/getwikipage.php "$AUFZEICHNUNG" || {
 	/usr/sbin/sendmail "vorstand@junge-piraten.de" <<EOT
 From: vorstand@junge-piraten.de
 To: vorstand@junge-piraten.de
