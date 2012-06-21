@@ -162,7 +162,7 @@ class Sitzung {
 		}
 
 		// Gefaellte Beschluesse ins wiki laden
-		preg_match_all('${{Antrag.*}}$Ums', $protokoll, $antraege, PREG_SET_ORDER);
+		preg_match_all('${{(Vorlage:)?Antrag.*}}$Ums', $protokoll, $antraege, PREG_SET_ORDER);
 		foreach ($antraege as $antrag) {
 			$antragVars = getMediaWikiVorlagenVars($antrag[0]);
 			if (preg_match('$Angenommen \\(([0-9])/([0-9])/([0-9])\\)$i', $antragVars["beschluss"], $stimmen)) {
