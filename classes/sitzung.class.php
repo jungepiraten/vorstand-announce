@@ -36,7 +36,12 @@ class Sitzung {
 	}
 
 	public function getInfos() {
-		return $this->wikiPage->getText(0);
+		return getMediaWikiVorlagenVars($this->wikiPage->getText(0));
+	}
+
+	public function getInfo($info) {
+		$infos = $this->getInfos();
+		return $infos[$info];
 	}
 
 	public function getProtokollVorlage() {
@@ -83,7 +88,7 @@ class Sitzung {
 		$args = explode(" ", $filter);
 		switch (array_shift($args)) {
 		case "anwesend":
-			return "== Anwesend ==";
+			return "== Anwesend ==\n" . $this->getInfo("teilnehmer");
 		case "aufzeichnung":
 			return "{{Aufzeichnung}}";
 		case "umlaufbeschluesse":
