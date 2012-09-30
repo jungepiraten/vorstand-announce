@@ -123,6 +123,9 @@ class Sitzung {
 			// Ueberschrift wegbuxen
 			array_shift($antragLines);
 			return trim(implode("\n", $antragLines));
+		case "mitglieder":
+			$sitzung = $this->getLastSitzung();
+			return file_get_contents("http://verwaltung.jupis.de/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
 		}
 	}
 
