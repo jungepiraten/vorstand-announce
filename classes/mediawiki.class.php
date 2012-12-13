@@ -160,7 +160,7 @@ class MediaWikiPage {
 		return getMediaWikiVorlagenVars($page);
 	}
 
-	public function protect($protections = null) {
+	public function protect($protections = null, $expire = null, $reason = null) {
 		if ($protections === null) {
 			$protections = array("edit" => "sysop", "move" => "sysop");
 		}
@@ -171,6 +171,12 @@ class MediaWikiPage {
 		
 		$token = $this->getProtectToken();
 		$string = "token=" . urlencode($token) . "&title=" . urlencode($this->titel) . "&protections=" . urlencode(implode("|", $protects));
+		if ($expire != null) {
+			$string .= "expiry=" . date("r", $expire);
+		}
+		if ($reason != null) {
+			$string .= "reason=" . urlencode($reason);
+		}
 		$data = $this->mediawiki->doPostRequest("action=protect", $string);
 	}
 }

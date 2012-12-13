@@ -125,7 +125,7 @@ class Sitzung {
 			return trim(implode("\n", $antragLines));
 		case "mitglieder":
 			$sitzung = $this->getLastSitzung();
-			return file_get_contents("http://verwaltung.jupis.de/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
+			return file_get_contents("http://verwaltung.jupis.de/_export/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
 		}
 	}
 
@@ -133,6 +133,7 @@ class Sitzung {
 		$this->padProtokoll->create();
 		$this->padProtokoll->setText($this->getProtokollVorlage());
 		// TODO Mail verschicken
+		$this->wikiPage->protect(array("edit" => "sysop"), time() + 24*60*60, "Aktuell als Pad: " . $this->padProtokoll->getURL());
 	}
 
 	public function save() {
@@ -185,7 +186,8 @@ class Sitzung {
 		}
 
 		$this->wikiProtokollPage->setText($protokoll, "Aus " . $this->padProtokoll->getURL());
-		$this->wikiProtokollPage->protect();
+		$this->wikiProtokollPage->protect(array("edit" => "sysop"));
+		$this->wikiPage->protect(array("edit" => "all"), null, null);
 	}
 }
 
