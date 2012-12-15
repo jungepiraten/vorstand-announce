@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DATE="`date +%Y-%m-%d`"
-#DATE="2012-05-10"
+#DATE="2012-12-13"
 VOSIPAGE="Vorstand/Sitzung $DATE"
 PAGE="$VOSIPAGE/Protokoll"
 AUFZEICHNUNG="Datei:Vorstand-Sitzung $DATE-Protokoll.ogg"

@@ -147,8 +147,8 @@ class MediaWikiPage {
 		if (isset($page["missing"])) {
 			return null;
 		}
-		$content = array_shift(array_shift($page["revisions"]));
-		return $content;
+		$content = array_shift($page["revisions"]);
+		return $content["*"];
 	}
 
 	public function getVorlagenVars($section = null) {
