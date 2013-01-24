@@ -103,6 +103,10 @@ class MediaWikiPage {
 		return $this->getActionToken("edit");
 	}
 
+	public function getMoveToken() {
+		return $this->getActionToken("move");
+	}
+
 	public function getProtectToken() {
 		return $this->getActionToken("protect");
 	}
@@ -158,6 +162,15 @@ class MediaWikiPage {
 		}
 
 		return getMediaWikiVorlagenVars($page);
+	}
+
+	public function move($newpage, $reason = null) {
+		$string = "token=" . urlencode($this->getMoveToken()) . "&from=" . urlencode($this->titel) . "&to=" . urlencode($newpage);
+		if ($reason != null) {
+			$string .= "&reason=" . urlencode($reason);
+		}
+		$data = $this->mediawiki->doPostRequest("action=move", $string);
+		$this->titel = $newpage;
 	}
 
 	public function protect($protections = null, $expire = null, $reason = null) {

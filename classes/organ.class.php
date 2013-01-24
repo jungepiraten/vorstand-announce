@@ -84,7 +84,9 @@ class Organ {
 
 	public function getLaufendeBeschluesse() {
 		$beschluesse = array();
-		foreach ($this->wiki->getPagesByCategory("Nicht erledigter Beschluss " . $this->getLabel()) as $page) {
+		$pages = $this->wiki->getPagesByCategory("Nicht erledigter Beschluss " . $this->getLabel());
+		sort($pages);
+		foreach ($pages as $page) {
 			preg_match('#Beschluss/(\\d*)#', $page, $match);
 			$beschluss = $this->getBeschluss($match[1]);
 			if ($beschluss->exists()) {
