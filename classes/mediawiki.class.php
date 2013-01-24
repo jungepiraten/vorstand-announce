@@ -131,7 +131,7 @@ class MediaWikiPage {
 
 	public function setText($text, $summary = "edited", $section = null) {
 		$edittoken = $this->getEditToken();
-		$string = "token=" . urlencode($edittoken) . "&title=" . urlencode($this->titel) . "&text=" . urlencode($text) . "&summary=" . urlencode($summary);
+		$string = "token=" . urlencode($edittoken) . "&bot=1&title=" . urlencode($this->titel) . "&text=" . urlencode($text) . "&summary=" . urlencode($summary);
 		if ($section != null) {
 			$string .= "&section=" . urlencode($section);
 		}
