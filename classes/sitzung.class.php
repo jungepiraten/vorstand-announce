@@ -117,7 +117,7 @@ class Sitzung {
 				$ntimestamp = $this->timestamp + $arg * 24*60*60;
 				$text .= "* [[" . $this->organ->getWikiPrefix() . "/Sitzung " . date("Y-m-d", $ntimestamp) . "|Der " . date("d.m.Y", $ntimestamp) . "]]\n";
 			}
-			return $text;
+			return rtrim($text);
 		case "antraege":
 			$antragLines = explode("\n", $this->wikiPage->getText(2));
 			// Ueberschrift wegbuxen
@@ -126,6 +126,13 @@ class Sitzung {
 		case "mitglieder":
 			$sitzung = $this->getLastSitzung();
 			return file_get_contents("http://verwaltung.junge-piraten.de/_export/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
+		case "finanzen":
+			$text = "";
+			foreach (array("DE76430609676016506900") as $konto) {
+				$url = "http://opendata.junge-piraten.de/konto/" . $konto . ".txt";
+				$text .= "* Der Kontostand von Konto" . $konto . " betrug am " . date("d.m.Y", time()-24*60*60) . " " . trim(file_get_contents($url)) . " EUR" . "\n";
+			}
+			return rtrim($text);
 		}
 	}
 
