@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . "/sitzung.class.php");
 require_once(dirname(__FILE__) . "/beschluss.class.php");
+require_once(dirname(__FILE__) . "/projekt.class.php");
 
 class Organ {
 	protected $label;
@@ -127,6 +128,23 @@ class Organ {
 		$beschluss->setVerantwortlicher($zustaendig);
 		$beschluss->save();
 		return $beschluss;
+	}
+
+	public function getProjekt($year, $titel) {
+		return new Projekt($this, $this->wiki->getPage($this->wikiPrefix . "/Projekt/" . $year . " " . $titel), $year, $titel);
+	}
+
+	public function getLaufendeProjekte() {
+		$projekte = array();
+		$pages = $this->wiki->getPagesByCategory("Nicht abgeschlossenes Projekt " . $this->getLabel());
+		foreach ($pages as $page) {
+			preg_match('#Projekt/(\\d{4}) (.*)$#', $page, $match);
+			$projekt = $this->getProjekt($match[1], $match[2]);
+			if ($projekt->exists()) {
+				$projekte[] = $projekt;
+			}
+		}
+		return $projekte;
 	}
 
 	public function updateSitzungsAnnounce($lastsitzung, $nextsitzung) {

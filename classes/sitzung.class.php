@@ -108,6 +108,15 @@ class Sitzung {
 				}
 			}
 			return trim($text);
+		case "laufendeprojekte":
+			$text = "";
+			foreach ($this->organ->getLaufendeProjekte() as $projekt) {
+				$vars = $projekt->getWikiPage()->getVorlagenVars();
+				$text .= "* [[" . $projekt->getWikiPage()->getPageName() . "|" . $projekt->getTitel() . "]]" . "\n";
+				$text .= "** Verantwortlich: " . (isset($vars["Verantwortlich"]) ? $vars["Verantwortlich"] : "Niemand") . "\n";
+				$text .= "** Status: \n";
+			}
+			return trim($text);
 		case "letztesitzung":
 			$sitzung = $this->getLastSitzung();
 			return "Das [[" . $sitzung->getProtokollPage()->getPageName() . "|Protokoll]] der Sitzung vom " . date("d.m.Y", $sitzung->getTimestamp()) . " wird mit -/-/- Stimmen angenommen/abgelehnt.";
@@ -130,7 +139,7 @@ class Sitzung {
 			$text = "";
 			foreach (array("DE76430609676016506900") as $konto) {
 				$url = "http://opendata.junge-piraten.de/konto/" . $konto . ".txt";
-				$text .= "* Der Kontostand von Konto" . $konto . " betrug am " . date("d.m.Y", time()-24*60*60) . " " . trim(file_get_contents($url)) . " EUR" . "\n";
+				$text .= "* Der Kontostand von Konto " . $konto . " betrug am " . date("d.m.Y", time()-24*60*60) . " " . trim(file_get_contents($url)) . " EUR" . "\n";
 			}
 			return rtrim($text);
 		}
@@ -195,6 +204,22 @@ class Sitzung {
 		$this->wikiProtokollPage->setText($protokoll, "Aus " . $this->padProtokoll->getURL());
 		$this->wikiProtokollPage->protect(array("edit" => "sysop"));
 		$this->wikiPage->protect(array("edit" => "all"), null, null);
+	}
+
+	public function test($protokoll) {
+		// Aenderungen an Projekten ins Wiki laden
+		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Projekt/(\\d{4}) (.*)\\|.*?\\]\\]((\n\\*\\*(\\s*Verantwortlich(.*)|\\s*(Erledigt.*)|\\s*Status:(.*)|.*))*)$mi', $protokoll, $projekte, PREG_SET_ORDER);
+		foreach ($projekte as $projektStruct) {
+			$projekt = $this->organ->getProjekt($projektStruct[1], $projektStruct[2]);
+			if (!empty($projektStruct[6])) {
+				$projekt->setVerantwortlicher(trim($projektStruct[6], ' :'));
+			}
+			if (!empty($projektStruct[7]) || strtolower(trim($projektStruct[8])) == "erledigt") {
+				$projekt->setErledigt(trim(substr($projektStruct[7], 8) . " ([[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung vom " . date("d.m.Y", $this->getTimestamp()) . "]])", ' :'));
+			}
+			$projekt->save();
+			$projekt->addSection("[[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung am " . date("d.m.Y", $this->getTimestamp()) . "]]", trim($projektStruct[3]));
+		}
 	}
 }
 

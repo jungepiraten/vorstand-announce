@@ -23,14 +23,14 @@ class Beschluss {
 	}
 
 	public function loadIfNeeded() {
-		if ($this->titel == null) {
+		if ($this->titel === null) {
 			$this->load();
 		}
 	}
 
 	public function exists() {
 		$this->loadIfNeeded();
-		return $this->titel != null;
+		return $this->titel !== null;
 	}
 
 	public function getBeschlussNr() {
@@ -119,6 +119,7 @@ class Beschluss {
 	}
 
 	public function isErledigt() {
+		$this->loadIfNeeded();
 		return $this->erledigt != null;
 	}
 

@@ -132,8 +132,12 @@ class MediaWikiPage {
 	public function setText($text, $summary = "edited", $section = null) {
 		$edittoken = $this->getEditToken();
 		$string = "token=" . urlencode($edittoken) . "&bot=1&title=" . urlencode($this->titel) . "&text=" . urlencode($text) . "&summary=" . urlencode($summary);
-		if ($section != null) {
-			$string .= "&section=" . urlencode($section);
+		if ($section !== null) {
+			if (substr($section,0,4) == "new:") {
+				$string .= "&section=new&sectiontitle=" . urlencode(substr($section,4));
+			} else {
+				$string .= "&section=" . urlencode($section);
+			}
 		}
 		$data = $this->mediawiki->doPostRequest("action=edit", $string);
 	}
