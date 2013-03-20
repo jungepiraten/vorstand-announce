@@ -4,9 +4,9 @@ class Beschluss {
 	protected $organ;
 	protected $wikiPage;
 	protected $beschlussnr;
+	protected $titel;
 
 	protected $timestamp;
-	protected $titel;
 	protected $text;
 	protected $zusatz;
 	protected $antragsteller;
@@ -20,17 +20,18 @@ class Beschluss {
 		$this->organ = $organ;
 		$this->wikiPage = $wikiPage;
 		$this->beschlussnr = $beschlussnr;
+		$this->titel = substr($wikiPage->getPageName(), strpos($wikiPage->getPageName(), $beschlussnr) + strlen($beschlussnr) + 1);
 	}
 
 	public function loadIfNeeded() {
-		if ($this->titel === null) {
+		if ($this->timestamp === null) {
 			$this->load();
 		}
 	}
 
 	public function exists() {
 		$this->loadIfNeeded();
-		return $this->titel !== null;
+		return $this->timestamp !== null;
 	}
 
 	public function getBeschlussNr() {
@@ -47,12 +48,7 @@ class Beschluss {
 	}
 
 	public function getTitel() {
-		$this->loadIfNeeded();
 		return $this->titel;
-	}
-
-	public function setTitel($titel) {
-		$this->titel = $titel;
 	}
 
 	public function getText() {
@@ -144,8 +140,6 @@ class Beschluss {
 		}
 
 		$this->timestamp = strtotime($values["Beschluss-Datum"]);
-		$this->beschlussnr = trim($values["Beschluss-Nummer"]);
-		$this->titel = trim($values["Beschluss-Titel"]);
 		$this->text = trim($values["Beschluss-Text"]);
 		$this->zusatz = trim($values["Zusatzinfos"]);
 		$this->antragsteller = trim($values["Antragssteller"]);
@@ -167,8 +161,6 @@ class Beschluss {
 		$this->wikiPage->setText("{{Beschluss Seite
 |Organ = {$this->organ->getLabel()}
 |Beschluss-Datum = {$date}
-|Beschluss-Nummer = {$this->getBeschlussNr()}
-|Beschluss-Titel = {$this->getTitel()}
 |Beschluss-Text = {$this->getText()}
 |Zusatzinfos = {$this->getZusatz()}
 |Antragssteller = {$this->getAntragsteller()}

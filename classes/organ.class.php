@@ -120,7 +120,6 @@ class Organ {
 		$page = $this->wiki->getPage($pagetitel);
 		$beschluss = new Beschluss($this, $page, $beschlussnr);
 		$beschluss->setTimestamp($timestamp);
-		$beschluss->setTitel($titel);
 		$beschluss->setText($antragtext);
 		$beschluss->setStimmen($dafuer, $dagegen, $enthaltung);
 		$beschluss->setZusatz($zusatz);
