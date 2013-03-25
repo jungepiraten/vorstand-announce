@@ -74,9 +74,11 @@ class Organ {
 			$pages = $this->wiki->searchPrefix($this->wikiPrefix . "/Beschluss/" . date("Ymd", $timestamp));
 			foreach ($pages as $page) {
 				preg_match('#Beschluss/(\\d*)#', $page, $match);
-				$beschluss = $this->getBeschluss($match[1]);
-				if ($beschluss->exists()) {
-					$beschluesse[] = $beschluss;
+				if (isset($match[1])) {
+					$beschluss = $this->getBeschluss($match[1]);
+					if ($beschluss->exists()) {
+						$beschluesse[] = $beschluss;
+					}
 				}
 			}
 		}
@@ -89,9 +91,11 @@ class Organ {
 		sort($pages);
 		foreach ($pages as $page) {
 			preg_match('#Beschluss/(\\d*)#', $page, $match);
-			$beschluss = $this->getBeschluss($match[1]);
-			if ($beschluss->exists()) {
-				$beschluesse[] = $beschluss;
+			if (isset($match[1])) {
+				$beschluss = $this->getBeschluss($match[1]);
+				if ($beschluss->exists()) {
+					$beschluesse[] = $beschluss;
+				}
 			}
 		}
 		return $beschluesse;
@@ -138,9 +142,11 @@ class Organ {
 		$pages = $this->wiki->getPagesByCategory("Nicht abgeschlossenes Projekt " . $this->getLabel());
 		foreach ($pages as $page) {
 			preg_match('#Projekt/(\\d{4}) (.*)$#', $page, $match);
-			$projekt = $this->getProjekt($match[1], $match[2]);
-			if ($projekt->exists()) {
-				$projekte[] = $projekt;
+			if (isset($match[2])) {
+				$projekt = $this->getProjekt($match[1], $match[2]);
+				if ($projekt->exists()) {
+					$projekte[] = $projekt;
+				}
 			}
 		}
 		return $projekte;
