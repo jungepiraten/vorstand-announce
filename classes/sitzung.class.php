@@ -201,12 +201,6 @@ class Sitzung {
 			}
 		}
 
-		$this->wikiProtokollPage->setText($protokoll, "Aus " . $this->padProtokoll->getURL());
-		$this->wikiProtokollPage->protect(array("edit" => "sysop"));
-		$this->wikiPage->protect(array("edit" => "all"), null, null);
-	}
-
-	public function test($protokoll) {
 		// Aenderungen an Projekten ins Wiki laden
 		preg_match_all('$^\\* \\[\\[' . preg_quote($this->organ->getWikiPrefix()) . '/Projekt/(\\d{4}) (.*)\\|.*?\\]\\]((\n\\*\\*(\\s*Verantwortlich(.*)|\\s*(Erledigt.*)|\\s*Status:(.*)|.*))*)$mi', $protokoll, $projekte, PREG_SET_ORDER);
 		foreach ($projekte as $projektStruct) {
@@ -220,6 +214,10 @@ class Sitzung {
 			$projekt->save();
 			$projekt->addSection("[[" . $this->wikiProtokollPage->getPageName() . "|Vorstandssitzung am " . date("d.m.Y", $this->getTimestamp()) . "]]", trim($projektStruct[3]));
 		}
+
+		$this->wikiProtokollPage->setText($protokoll, "Aus " . $this->padProtokoll->getURL());
+		$this->wikiProtokollPage->protect(array("edit" => "sysop"));
+		$this->wikiPage->protect(array("edit" => "all"), null, null);
 	}
 }
 
