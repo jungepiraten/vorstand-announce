@@ -190,12 +190,12 @@ class Sitzung {
 		preg_match_all('${{(Vorlage:)?Antrag.*}}$Ums', $protokoll, $antraege, PREG_SET_ORDER);
 		foreach ($antraege as $antrag) {
 			$antragVars = getMediaWikiVorlagenVars($antrag[0]);
-			if (preg_match('$Angenommen \\(([0-9])/([0-9])/([0-9])\\)$i', $antragVars["beschluss"], $stimmen)) {
+			if (trim(strtolower($antragVars["beschluss"])) == "angenommen") {
 				$begruendung = $antragVars["begruendung"];
 				if ($begruendung == null) {
 					$begruendung = $antragVars["begründung"];
 				}
-				$beschluss = $this->organ->addBeschluss($this->timestamp, $antragVars["antragstitel"], $antragVars["antragstext"], $stimmen[1], $stimmen[2], $stimmen[3], $begruendung, $antragVars["antragssteller"], $antragVars["zustaendig"]);
+				$beschluss = $this->organ->addBeschluss($this->timestamp, $antragVars["antragstitel"], $antragVars["antragstext"], $antragVars["dafuer"], $antragVars["dagegen"], $antragVars["enthaltung"], $begruendung, $antragVars["antragssteller"], $antragVars["zustaendig"]);
 				$antragVorlage = str_replace($antragVars["beschluss"], $antragVars["beschluss"] . " [[" . $beschluss->getWikiPage()->getPageName() . "|Beschluss " . $beschluss->getBeschlussNr() . "]]", $antrag[0]);
 				$protokoll = str_replace($antrag[0], $antragVorlage, $protokoll);
 			}
