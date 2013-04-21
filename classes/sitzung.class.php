@@ -134,7 +134,7 @@ class Sitzung {
 			return trim(implode("\n", $antragLines));
 		case "mitglieder":
 			$sitzung = $this->getLastSitzung();
-			return file_get_contents("http://verwaltung.junge-piraten.de/_export/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
+			return file_get_contents("http://vpanel.intern.junge-piraten.de/_export/bericht-vosi.php?last=" . date("d.m.Y", $sitzung->getTimestamp()));
 		case "finanzen":
 			$text = "";
 			foreach (array("DE76430609676016506900") as $konto) {
