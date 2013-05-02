@@ -103,8 +103,8 @@ class Sitzung {
 			foreach ($this->organ->getLaufendeBeschluesse() as $beschluss) {
 				$vars = $beschluss->getWikiPage()->getVorlagenVars();
 				$text .= "* [[" . $beschluss->getWikiPage()->getPageName() . "|" . $beschluss->getTitel() . "]]" . "\n";
-				if (isset($vars["Zustaendig"])) {
-					$text .= "** Verantwortlich: " . $vars["Zustaendig"] . "\n";
+				if ($beschluss->hasVerantwortlicher()) {
+					$text .= "** Verantwortlich: " . $beschluss->getVerantwortlicher() . "\n";
 				}
 			}
 			return trim($text);
