@@ -147,7 +147,7 @@ class Beschluss {
 		$this->dagegen = trim($values["nein-Stimmen"]);
 		$this->enthaltung = trim($values["Enthaltung-Stimmen"]);
 		if (isset($values["Zustaendig"])) {
-			$this->verwantwortlicher = trim($value["Zustaendig"]);
+			$this->verantwortlicher = trim($value["Zustaendig"]);
 		}
 		if (isset($values["erledigt"])) {
 			$this->erledigt = trim($value["erledigt"]);
