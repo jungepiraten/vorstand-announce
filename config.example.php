@@ -24,7 +24,7 @@ class Bundesvorstand extends Organ {
 $wiki = new Mediawiki("https://wiki.junge-piraten.de/w/api.php");
 $wiki->login("Vorstandsbot", "WIKIPASSWORT", "Junge Piraten");
 
-$pad = new EtherpadLite("APIKEY", pad.junge-piraten.de");
+$pad = new EtherpadLite("APIKEY", "pad.junge-piraten.de");
 
 $vorstand = new Bundesvorstand($wiki, $pad);
 
